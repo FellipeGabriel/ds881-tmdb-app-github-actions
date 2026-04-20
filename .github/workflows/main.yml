@@ -1,7 +1,7 @@
 name: CI - Testes
 
 on:
-  push:
+  pull_request:
     branches:
       - release
   workflow_dispatch:
