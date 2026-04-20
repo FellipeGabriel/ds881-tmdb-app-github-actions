@@ -1,20 +1,15 @@
-name: Android - Build e Release APK
+name: Android - Build APK (Validação PR)
 
 on:
-  workflow_run:
-    workflows: ["CI - Testes"]
-    types:
-      - completed
-
+  pull_request:
+    branches:
+      - release
   workflow_dispatch:
 
 jobs:
   build:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    permissions:
-      contents: write
 
     steps:
       - name: Checkout do código
@@ -51,13 +46,5 @@ jobs:
       - name: Upload do APK como artefato
         uses: actions/upload-artifact@v4
         with:
-          name: app-release-v${{ github.run_number }}
+          name: app-release-pr-${{ github.event.pull_request.number || github.run_number }}
           path: android/app/build/outputs/apk/release/app-release.apk
-
-      - name: Criar GitHub Release
-        if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ github.run_number }}
-          name: Release v${{ github.run_number }}
-          files: android/app/build/outputs/apk/release/app-release.apk
