@@ -1,0 +1,31 @@
+name: Docker - Build
+
+on:
+  push:
+    branches:
+      - release
+  pull_request:
+    branches:
+      - release
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Extrair SHA do commit
+        id: vars
+        run: |
+          SHA=${GITHUB_SHA::7}
+          echo "sha=$SHA" >> $GITHUB_OUTPUT
+          echo "SHA do commit: $SHA"
+
+      - name: Build da imagem Docker
+        run: |
+          docker build \
+            --build-arg TMDB_API_KEY=${{ secrets.TMDB_API_KEY }} \
+            -t tmdb-app:${{ steps.vars.outputs.sha }} \
+            .
