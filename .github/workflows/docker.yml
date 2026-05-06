@@ -39,5 +39,6 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/tmdb-app:${{ steps.vars.outputs.sha }}
             ${{ secrets.DOCKERHUB_USERNAME }}/tmdb-app:latest
+          platforms: linux/amd64,linux/arm64
           build-args: |
             TMDB_API_KEY=${{ secrets.TMDB_API_KEY }}
